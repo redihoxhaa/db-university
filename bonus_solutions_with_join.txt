@@ -1,0 +1,96 @@
+1. Selezionare tutti i corsi del Corso di Laurea in Informatica (22)
+
+SELECT
+    *
+FROM
+    `courses`
+INNER JOIN `degrees` ON `courses`.`degree_id` = `degrees`.`id`
+WHERE
+    `degrees`.`name` = "Corso di Laurea in Informatica";
+
+---------------------------------------------------------------------------------------------------
+
+2. Selezionare le informazioni sul corso con id = 144, con tutti i relativi appelli d’esame
+
+SELECT
+    *
+FROM
+    `courses`
+INNER JOIN `exams` ON `exams`.`course_id` = `courses`.`id`
+WHERE
+    `courses`.`id` = 144;
+
+---------------------------------------------------------------------------------------------------
+
+3. Selezionare a quale dipartimento appartiene il Corso di Laurea in Diritto dell'Economia (Dipartimento di Scienze politiche, giuridiche e studi internazionali)
+
+SELECT
+    `degrees`.`name` AS `degree`,
+    `departments`.`name` AS `relative_department`
+FROM
+    `degrees`
+INNER JOIN `departments` ON `departments`.`id` = `degrees`.`department_id`
+WHERE
+    `degrees`.`name` = "Corso di Laurea in Diritto dell'Economia";
+
+---------------------------------------------------------------------------------------------------
+
+4. Selezionare tutti gli appelli d'esame del Corso di Laurea Magistrale in Fisica del
+primo anno
+
+SELECT
+    `exams`.*
+FROM
+    `exams`
+INNER JOIN `courses` ON `exams`.`course_id` = `courses`.`id`
+INNER JOIN `degrees` ON `courses`.`degree_id` = `degrees`.`id`
+WHERE
+    `degrees`.`name` = "Corso di Laurea Magistrale in Fisica"
+AND
+	`courses`.`year` = 1;
+
+---------------------------------------------------------------------------------------------------
+
+5. Selezionare tutti i docenti che insegnano nel Corso di Laurea in Lettere (21)
+
+SELECT DISTINCT
+    `teachers`.*
+FROM
+    `degrees`
+INNER JOIN `courses` ON `degrees`.`id` = `courses`.`degree_id`
+INNER JOIN `course_teacher` ON `course_teacher`.`course_id` = `courses`.id
+INNER JOIN `teachers` ON `course_teacher`.`teacher_id` = `teachers`.id
+WHERE
+    `degrees`.`name` = "Corso di Laurea in Lettere";
+
+---------------------------------------------------------------------------------------------------
+
+6. Selezionare il libretto universitario di Mirco Messina (matricola n. 620320)
+
+SELECT
+    `registration_number` AS `Mirco_reg_num`
+FROM
+    `students`
+WHERE
+    `name` = "Mirco" AND `surname` = "Messina";
+
+---------------------------------------------------------------------------------------------------
+
+7. Selezionare il voto medio di superamento d'esame per ogni corso, con anche i dati
+del corso di laurea associato, ordinati per media voto decrescente
+
+SELECT
+    AVG(`vote`) AS `average_vote`,
+    `degrees`.*
+FROM
+    `exam_student`
+INNER JOIN `students` ON `exam_student`.`student_id` = `students`.`id`
+INNER JOIN `degrees` ON `students`.`degree_id` = `degrees`.`id`
+WHERE
+    `exam_student`.`vote` >= 18
+GROUP BY
+    `degrees`.`id`
+ORDER BY
+    `average_vote`
+DESC
+    ;
